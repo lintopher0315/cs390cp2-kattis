@@ -2,13 +2,25 @@
 
 using namespace std;
 
+unordered_map<string, vector<string>> um;
+unordered_set<string> us;
+vector<string> ans;
+
+void dfs(string s) {
+    for (string a : um[s]) {
+        if (us.find(a)!=us.end()) continue;
+        dfs(a);
+    }
+    us.insert(s);
+    ans.push_back(s);
+}
+
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(0);
 
     string l;
     getline(cin, l);
-    unordered_map<string, vector<string>> um;
     int n=stoi(l);
     while (n--) {
         getline(cin, l);
@@ -17,6 +29,7 @@ int main() {
             if (l[i]==':') {
                 f=c;
                 c="";
+                ++i;
             }
             else if (l[i]==' ') {
                 um[c].push_back(f);
@@ -29,19 +42,9 @@ int main() {
         um[c].push_back(f);
     }
     getline(cin, l);
-    queue<string> q;
-    unordered_set<string> us;
-    q.push(l);
-    us.insert(l);
-    while (!q.empty()) {
-        string t=q.front(); q.pop();
-        cout << t << "\n";
-        for (string a : um[t]) {
-            if (us.find(a)==us.end()) {
-                q.push(a);
-                us.insert(a);
-            }
-        }
+    dfs(l);
+    for (int i=ans.size()-1; ~i; --i) {
+        cout << ans[i] << "\n";
     }
 }
 
